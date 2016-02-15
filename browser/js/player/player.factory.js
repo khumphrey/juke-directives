@@ -7,7 +7,9 @@ juke.factory('PlayerFactory', function ($rootScope) {
   var playing = false,
       currentSong = null,
       currentList = [],
-      progress = 0;
+      progress = 0,
+      random = false,
+      songArray = [];
 
   // initialize the audio element
 
@@ -16,6 +18,23 @@ juke.factory('PlayerFactory', function ($rootScope) {
   // define the factory value
 
   var player = {};
+
+  player.getRandom = function() {
+    return random;
+  }
+
+  player.random = function() {
+    random = !random;
+    currentList.forEach(function(el) {
+      songArray.push(el);
+    })
+    var max = songArray.length - 1;
+    for (var i = max; i >= 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1)), temp = songArray[i];
+      songArray[i] = songArray[j];
+      songArray[j] = temp;
+    }
+  }
 
   player.pause = function () {
     audio.pause();
@@ -33,6 +52,7 @@ juke.factory('PlayerFactory', function ($rootScope) {
     audio.load();
     currentSong = song;
     currentList = list;
+    if (random) player.random();
     player.resume();
   };
 
@@ -47,9 +67,10 @@ juke.factory('PlayerFactory', function ($rootScope) {
   function mod (num, m) { return ((num % m) + m) % m; };
 
   function skip (interval) {
-    var index = currentList.indexOf(currentSong);
-    index = mod(index + interval, currentList.length);
-    player.start(currentList[index], currentList);
+    var songs = random ? songArray : currentList, 
+        index = songs.indexOf(currentSong);
+    index = mod(index + interval, songs.length);
+    player.start(songs[index], currentList);
   }
 
   player.next = function () {
@@ -75,6 +96,10 @@ juke.factory('PlayerFactory', function ($rootScope) {
     progress = audio.currentTime / audio.duration;
     $rootScope.$evalAsync();
   });
+
+  player.updateCurrentTime = function(progressWidth) {
+    audio.currentTime = progressWidth*audio.duration;
+  }
 
   // return factory value
 

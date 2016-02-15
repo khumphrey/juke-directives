@@ -43,7 +43,8 @@ footer {
   padding: 8px; }
   footer .bar {
     overflow: hidden;
-    padding: 9px; }
+    padding: 9px; 
+    padding-top: 0px;}
   footer .progress-bar {
     transition: none !important; }
 
@@ -57,3 +58,7 @@ footer {
 
 tr[double-click]:hover {
   background-color: #444; }
+
+.pressed {
+  background-color: #313539;
+}

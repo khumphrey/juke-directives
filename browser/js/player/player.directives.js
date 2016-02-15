@@ -14,6 +14,16 @@ juke.directive('foot', function(PlayerFactory) {
             scope.getPercent = function() {
                 return PlayerFactory.getProgress() * 100;
             };
+
+            scope.toggleProgress = function(e) {
+                var width = angular.element(e.srcElement)[0].offsetWidth,
+                    progressWidth = e.offsetX/width;
+                PlayerFactory.updateCurrentTime(progressWidth);
+            }
+
+            scope.random = function() {
+                PlayerFactory.random()
+            }
         }
     }
 })
